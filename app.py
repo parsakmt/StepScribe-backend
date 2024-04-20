@@ -2,12 +2,26 @@ from flask import Flask, request, jsonify
 import boto3
 from botocore.exceptions import ClientError
 import os
+from helpers import db
 
 app = Flask(__name__)
 
 @app.get("/")
 def get_home():
     return "Welcome to StepScribe", 200
+
+@app.get('/users')
+def get_users():
+    try:
+        query = "SELECT * FROM users"
+        users = db.select_database(query)
+        return users, 200
+    except Exception as e:
+        return f"Internal Server Error: {e}", 500
+    
+@app.route('/users', methods=['POST'])
+def insert_users():
+    pass
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
